@@ -1,35 +1,20 @@
 import 'package:flutter/material.dart';
 
-import 'core/http_client.dart';
+import 'features/nivelacion_t3/lista_productos_screen.dart';
 
 void main() {
-  runApp(MainApp());
+  runApp(const MainApp());
 }
 
 class MainApp extends StatelessWidget {
-  MainApp({super.key});
-
-  final ApiClient clientePrueba = ApiClient();
+  const MainApp({super.key});
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: Scaffold(
-        body: Center(
-          child: FutureBuilder<dynamic>(
-            future: clientePrueba.get('/orders'),
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return const CircularProgressIndicator();
-              }
-              if (snapshot.hasError) {
-                return Text('Error: ${snapshot.error}');
-              }
-              return Text('${snapshot.data}');
-            },
-          ),
-        ),
-      ),
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(useMaterial3: true, colorSchemeSeed: Colors.brown),
+      home: const ListaProductosScreen(),
     );
   }
 }
