@@ -59,6 +59,30 @@ class ApiClient {
     throw const NetworkFailure();
   }
 
+  String? _detailMessage(Object? json) {
+    if (json is Map && json['detail'] is String) {
+      return json['detail'] as String;
+    }
+    return null;
+  }
+
+  Map<String, String> _fieldsFrom(Object? json) {
+    final fields = <String, String>{};
+    if (json is Map && json['detail'] is List) {
+      for (final error in json['detail'] as List) {
+        if (error is Map && error['loc'] is List && error['msg'] is String) {
+          final loc = error['loc'] as List;
+          if (loc.length >= 2) {
+            fields[loc[1].toString()] = error['msg'] as String;
+          } else if (loc.isNotEmpty) {
+            fields[loc.last.toString()] = error['msg'] as String;
+          }
+        }
+      }
+    }
+    return fields;
+  }
+
   dynamic _tryDecode(http.Response response) {
     if (response.bodyBytes.isEmpty) return null;
 
